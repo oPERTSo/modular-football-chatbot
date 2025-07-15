@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Response</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .test-button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 API Response Test</h1>
+        
+        <button class="test-button" onclick="testAPI()">Test Topscorer API</button>
+        
+        <div id="result"></div>
+        
+        <h2>Raw Response:</h2>
+        <div id="rawResponse"></div>
+        
+        <h2>Parsed Response:</h2>
+        <div id="parsedResponse"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            const rawResponseDiv = document.getElementById('rawResponse');
+            const parsedResponseDiv = document.getElementById('parsedResponse');
+            
+            resultDiv.innerHTML = '⏳ Testing...';
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: 'ดาวซัลโวพรีเมียร์ลีก' })
+                });
+                
+                const data = await response.json();
+                
+                // แสดงผลลัพธ์
+                resultDiv.innerHTML = `
+                    <div class="result ${response.ok ? 'success' : 'error'}">
+                        <strong>Status:</strong> ${response.status} ${response.statusText}<br>
+                        <strong>Response OK:</strong> ${response.ok}<br>
+                        <strong>Has response field:</strong> ${data.response ? 'Yes' : 'No'}<br>
+                        <strong>Has message field:</strong> ${data.message ? 'Yes' : 'No'}<br>
+                        <strong>Response length:</strong> ${data.response ? data.response.length : 'N/A'}<br>
+                        <strong>Contains HTML table:</strong> ${data.response && data.response.includes('<table') ? 'Yes' : 'No'}<br>
+                        <strong>Contains error message:</strong> ${data.response && data.response.includes('ขออภัย') ? 'Yes' : 'No'}
+                    </div>
+                `;
+                
+                // แสดง raw response
+                rawResponseDiv.innerHTML = `
+                    <div class="result">
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+                
+                // แสดง parsed response
+                if (data.response) {
+                    parsedResponseDiv.innerHTML = `
+                        <div class="result">
+                            ${data.response}
+                        </div>
+                    `;
+                } else {
+                    parsedResponseDiv.innerHTML = `
+                        <div class="result error">
+                            No response field found
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

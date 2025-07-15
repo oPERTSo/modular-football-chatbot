@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>⚽ ฟุตบอล Chatbot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/index.css">
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ ฟุตบอล Chatbot API</h1>
+        <div class="subtitle">
+            🚀 ระบบ AI วิเคราะห์ฟุตบอล พร้อมข่าวล่าสุดจาก thsport.live
+        </div>
+        
+        <div class="modular-info">
+            <h4>🧩 Modular Architecture:</h4>
+            <p>• <b>modules/config.py</b> - จัดการ API Keys และการตั้งค่า</p>
+            <p>• <b>modules/football_api.py</b> - จัดการ API Football ทั้งหมด</p>
+            <p>• <b>modules/news_manager.py</b> - จัดการข่าวและการค้นหา</p>
+            <p>• <b>modules/thai_football_bot.py</b> - Logic หลักของ Chatbot</p>
+            <p>• <b>modules/api_handlers.py</b> - จัดการ Flask routes</p>
+        </div>
+        
+        <div class="api-grid">
+            <div class="api-card" onclick="window.open('chat-live.html', '_blank')" style="cursor: pointer; border: 2px solid #ffd700;">
+                <span class="method get" style="background: #ffd700; color: #000;">LIVE</span>
+                <div class="endpoint">chat-live.html</div>
+                <div class="description">
+                    <span class="emoji">💬</span>
+                    หน้าแชทแบบ ChatGPT (Live Server)<br>
+                    <small>🚀 ใหม่! ใช้ผ่าน Live Server</small>
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method post">POST</span>
+                <div class="endpoint">http://localhost:5000/chat</div>
+                <div class="description">
+                    <span class="emoji">💬</span>
+                    Chat API สำหรับนักพัฒนา<br>
+                    <small>Body: {"prompt": "ข่าวบอลวันนี้"}</small>
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method get">GET</span>
+                <div class="endpoint">http://localhost:5000/api/news/latest</div>
+                <div class="description">
+                    <span class="emoji">📰</span>
+                    ข่าวฟุตบอลล่าสุด (การ์ดสวยงาม)
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method get">GET</span>
+                <div class="endpoint">http://localhost:5000/api/news/search?q=แมนยู</div>
+                <div class="description">
+                    <span class="emoji">🔍</span>
+                    ค้นหาข่าวตามทีม/คีย์เวิร์ด
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method get">GET</span>
+                <div class="endpoint">http://localhost:5000/api/standings?league=พรีเมียร์ลีก</div>
+                <div class="description">
+                    <span class="emoji">🏆</span>
+                    ตารางคะแนนแบบ Real-time
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method get">GET</span>
+                <div class="endpoint">http://localhost:5000/api/topscorers?league=พรีเมียร์ลีก</div>
+                <div class="description">
+                    <span class="emoji">⚽</span>
+                    ดาวซัลโวประจำลีก
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method get">GET</span>
+                <div class="endpoint">http://localhost:5000/api/team-form?team=แมนยู</div>
+                <div class="description">
+                    <span class="emoji">📊</span>
+                    ฟอร์ม 5 นัดหลังสุดของทีม
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method get">GET</span>
+                <div class="endpoint">http://localhost:5000/api/compare-teams?team1=แมนยู&team2=ลิเวอร์พูล</div>
+                <div class="description">
+                    <span class="emoji">🔥</span>
+                    เปรียบเทียบฟอร์ม 2 ทีม
+                </div>
+            </div>
+            
+            <div class="api-card">
+                <span class="method get">GET</span>
+                <div class="endpoint">http://localhost:5000/api/last-results</div>
+                <div class="description">
+                    <span class="emoji">📈</span>
+                    ผลบอลล่าสุด/วันนี้
+                </div>
+            </div>
+        </div>
+        
+        <h3>🔥 ตัวอย่างการใช้งาน:</h3>
+        <div class="examples">
+            <div class="example-item">
+                <b>ถาม:</b> "ดาวซัลโว พรีเมียร์ลีก" <br>
+                <b>ตอบ:</b> จะได้ข้อมูลดาวซัลโวจาก API จริง
+            </div>
+            <div class="example-item">
+                <b>ถาม:</b> "ตารางคะแนน ลาลีกา" <br>
+                <b>ตอบ:</b> จะได้ตารางคะแนนจาก API
+            </div>
+            <div class="example-item">
+                <b>ถาม:</b> "ฟอร์ม 5 นัด แมนยู" <br>
+                <b>ตอบ:</b> จะได้ผลงาน 5 นัดล่าสุดของแมนยู
+            </div>
+            <div class="example-item">
+                <b>ถาม:</b> "เปรียบเทียบ แมนยู vs ลิเวอร์พูล" <br>
+                <b>ตอบ:</b> จะได้การเปรียบเทียบฟอร์ม 2 ทีม
+            </div>
+            <div class="example-item">
+                <b>ถาม:</b> "อันดับ แมนซิตี้" <br>
+                <b>ตอบ:</b> จะได้อันดับปัจจุบันของแมนซิตี้
+            </div>
+            <div class="example-item">
+                <b>ถาม:</b> "โปรแกรมบอลวันนี้" <br>
+                <b>ตอบ:</b> จะได้รายการแข่งขันวันนี้
+            </div>
+            <div class="example-item">
+                <b>ถาม:</b> "ข่าวบอลวันนี้" <br>
+                <b>ตอบ:</b> จะได้ข่าวล่าสุดจากไฟล์ data
+            </div>
+        </div>
+        
+        <div class="status">
+            <h4>✅ สถานะระบบ:</h4>
+            <p>• Live Server: ใช้งานได้ (VS Code Extension)</p>
+            <p>• Backend API: http://localhost:5000 (ต้องรัน Python แยก)</p>
+            <p>• Frontend: Static HTML/CSS/JS</p>
+            <p>• Chat Interface: พร้อมใช้งาน</p>
+            <p>• Modular Structure: ✅ พร้อมใช้งาน</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Topscorer API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .test-button:hover { background: #0056b3; }
+        .result { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+        .debug { background: #f0f0f0; color: #333; font-family: monospace; white-space: pre-wrap; }
+        .loading { display: none; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Topscorer API</h1>
+        
+        <div>
+            <h3>Click to test different topscorer queries:</h3>
+            <button class="test-button" onclick="testTopscorer('ดาวซัลโวพรีเมียร์ลีก')">ดาวซัลโวพรีเมียร์ลีก</button>
+            <button class="test-button" onclick="testTopscorer('topscorer premier league')">topscorer premier league</button>
+            <button class="test-button" onclick="testTopscorer('ดาวซัลโว epl')">ดาวซัลโว epl</button>
+            <button class="test-button" onclick="testTopscorer('ดาวซัลโวลาลีกา')">ดาวซัลโวลาลีกา</button>
+            <button class="test-button" onclick="testTopscorer('topscorer laliga')">topscorer laliga</button>
+        </div>
+        
+        <div id="loading" class="loading">
+            🔄 กำลังทดสอบ...
+        </div>
+        
+        <div id="result" class="result" style="display: none;">
+            <!-- Result will be shown here -->
+        </div>
+        
+        <div id="debug" class="result debug" style="display: none;">
+            <!-- Debug info will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        async function testTopscorer(message) {
+            console.log('Testing message:', message);
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('debug').style.display = 'none';
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: message })
+                });
+                
+                const data = await response.json();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show debug info
+                const debugDiv = document.getElementById('debug');
+                debugDiv.innerHTML = `
+                    <strong>Request:</strong> ${JSON.stringify({prompt: message}, null, 2)}
+                    <strong>Response Status:</strong> ${response.status}
+                    <strong>Response Data:</strong> ${JSON.stringify(data, null, 2)}
+                `;
+                debugDiv.style.display = 'block';
+                
+                // Show result
+                const resultDiv = document.getElementById('result');
+                
+                if (response.ok) {
+                    const result = data.response || data.message || 'No response';
+                    
+                    if (result.includes('ขออภัย') || result.includes('ไม่สามารถดึงข้อมูล')) {
+                        resultDiv.className = 'result error';
+                        resultDiv.innerHTML = `
+                            <h3>❌ ERROR</h3>
+                            <p>${result}</p>
+                        `;
+                    } else {
+                        resultDiv.className = 'result success';
+                        resultDiv.innerHTML = `
+                            <h3>✅ SUCCESS</h3>
+                            <div>${result}</div>
+                        `;
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ HTTP ERROR</h3>
+                        <p>Status: ${response.status}</p>
+                        <p>Error: ${data.error || 'Unknown error'}</p>
+                    `;
+                }
+                
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show error
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ NETWORK ERROR</h3>
+                    <p>${error.message}</p>
+                `;
+                resultDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

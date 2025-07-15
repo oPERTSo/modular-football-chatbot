@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Football Chat - ถามคำถามฟุตบอล</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="status-indicator">🟢 ONLINE</div>
+            <h1>⚽ Football AI Chat</h1>
+            <p>ถามคำถามเกี่ยวกับฟุตบอลไทยและต่างประเทศ</p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <h3>🤖 ยินดีต้อนรับสู่ Football AI!</h3>
+                <p>ฉันสามารถตอบคำถามเกี่ยวกับ:</p>
+                <div class="suggestions disabled-bar">
+                    <span class="suggestion-chip">📊 ตารางคะแนน</span>
+                    <span class="suggestion-chip">⚽ ดาวซัลโว</span>
+                    <span class="suggestion-chip">📰 ข่าวล่าสุด</span>
+                    <span class="suggestion-chip">� ทำนายผล</span>
+                    <span class="suggestion-chip">�📈 ฟอร์มทีม</span>
+                    <span class="suggestion-chip">🔥 เปรียบเทียบทีม</span>
+                    <span class="suggestion-chip">📅 ผลบอล</span>
+                </div>
+                
+                <div class="quick-questions">
+                    <div class="quick-question">
+                        <div class="quick-question-title">⚽ ดาวซัลโวพรีเมียร์ลีก</div>
+                        <div class="quick-question-desc">ดูนักเตะทำประตูสูงสุด</div>
+                    </div>
+                    <div class="quick-question">
+                        <div class="quick-question-title">🏆 ตารางคะแนนลาลีกา</div>
+                        <div class="quick-question-desc">อันดับทีมในลาลีกา</div>
+                    </div>
+                    <div class="quick-question">
+                        <div class="quick-question-title">📊 ฟอร์มแมนยู</div>
+                        <div class="quick-question-desc">ผลงาน 5 นัดล่าสุด</div>
+                    </div>
+                    <div class="quick-question">
+                        <div class="quick-question-title">📰 ข่าววันนี้</div>
+                        <div class="quick-question-desc">ข่าวฟุตบอลล่าสุด</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="loading" id="loadingMessage">
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+                <div class="typing-indicator">
+                    กำลังคิด
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <form class="chat-input-form" onsubmit="sendMessage(event)">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="messageInput"
+                    placeholder="ถามคำถามเกี่ยวกับฟุตบอล..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="send-button" id="sendButton">
+                    ➤
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

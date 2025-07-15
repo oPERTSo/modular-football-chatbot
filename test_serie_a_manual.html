@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Serie A Test</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Serie A Standings Test</h1>
+    <button onclick="testSerieA()">Get Serie A Standings</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testSerieA() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: 'ตารางลีกเซเรียอา'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('API Response:', data);
+                
+                if (data.response) {
+                    resultDiv.innerHTML = data.response;
+                } else {
+                    resultDiv.innerHTML = 'Error: ' + JSON.stringify(data);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

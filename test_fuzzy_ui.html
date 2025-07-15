@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบ Enhanced Fuzzy Matching</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .test-group {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-group h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 ทดสอบ Enhanced Fuzzy Matching</h1>
+        <p>ทดสอบความสามารถในการค้นหาลีกแม้พิมพ์ผิดเล็กน้อย</p>
+        
+        <div class="test-group">
+            <h3>Serie A - เซเรียอา</h3>
+            <button class="test-button" onclick="testQuery('ตารางเซเรียอา')">เซเรียอา (ถูกต้อง)</button>
+            <button class="test-button" onclick="testQuery('ตารางซีเรียอา')">ซีเรียอา (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางเซเรียอะ')">เซเรียอะ (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางซีเรียอะ')">ซีเรียอะ (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางเซรีย อา')">เซรีย อา (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางซีรีย อา')">ซีรีย อา (พิมพ์ผิด)</button>
+        </div>
+        
+        <div class="test-group">
+            <h3>Premier League - พรีเมียร์ลีก</h3>
+            <button class="test-button" onclick="testQuery('ตารางพรีเมียร์ลีก')">พรีเมียร์ลีก (ถูกต้อง)</button>
+            <button class="test-button" onclick="testQuery('ตารางปรีเมียร์ลีก')">ปรีเมียร์ลีก (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางพรีเมียลีก')">พรีเมียลีก (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางปรีเมียลีก')">ปรีเมียลีก (พิมพ์ผิด)</button>
+        </div>
+        
+        <div class="test-group">
+            <h3>La Liga - ลาลีกา</h3>
+            <button class="test-button" onclick="testQuery('ตารางลาลีกา')">ลาลีกา (ถูกต้อง)</button>
+            <button class="test-button" onclick="testQuery('ตารางลาลิกา')">ลาลิกา (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางลาลีค')">ลาลีค (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางลาลิค')">ลาลิค (พิมพ์ผิด)</button>
+        </div>
+        
+        <div class="test-group">
+            <h3>Bundesliga - บุนเดสลีกา</h3>
+            <button class="test-button" onclick="testQuery('ตารางบุนเดสลีกา')">บุนเดสลีกา (ถูกต้อง)</button>
+            <button class="test-button" onclick="testQuery('ตารางบันเดสลีกา')">บันเดสลีกา (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางบุนเดสลีค')">บุนเดสลีค (พิมพ์ผิด)</button>
+            <button class="test-button" onclick="testQuery('ตารางบันเดสลีค')">บันเดสลีค (พิมพ์ผิด)</button>
+        </div>
+        
+        <div id="results">
+            <h3>ผลการทดสอบ</h3>
+            <p>กดปุ่มเพื่อเริ่มทดสอบ</p>
+        </div>
+    </div>
+
+    <script>
+        async function testQuery(query) {
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: query })
+                });
+                
+                const data = await response.json();
+                
+                if (data.response && data.response.includes('<table')) {
+                    // Success - HTML table generated
+                    const leagueMatch = data.response.match(/ตารางคะแนน\s*([^<]+)/);
+                    const leagueName = leagueMatch ? leagueMatch[1].trim() : 'Unknown';
+                    
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            <strong>✅ SUCCESS:</strong> "${query}" 
+                            <br>→ ตรวจพบ: ${leagueName}
+                            <br>→ สร้างตารางสำเร็จ
+                        </div>
+                    `;
+                } else {
+                    // Failed - no table
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            <strong>❌ FAILED:</strong> "${query}" 
+                            <br>→ ไม่สามารถสร้างตารางได้
+                            <br>→ Response: ${data.response?.substring(0, 100)}...
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        <strong>❌ ERROR:</strong> "${query}" 
+                        <br>→ ${error.message}
+                    </div>
+                `;
+            }
+            
+            // Auto-scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

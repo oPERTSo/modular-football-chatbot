@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>⚽ Football Chatbot - Live Server</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        .btn.secondary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn.secondary:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ Football Chatbot</h1>
+        <div class="subtitle">
+            🚀 ระบบ AI วิเคราะห์ฟุตบอล พร้อม Live Server
+        </div>
+        
+        <div class="buttons">
+            <a href="chat-live.html" class="btn">
+                <span class="emoji">💬</span>
+                เริ่มแชท
+            </a>
+            <a href="index-live.html" class="btn secondary">
+                <span class="emoji">📋</span>
+                ดู API Docs
+            </a>
+        </div>
+        
+        <div class="status">
+            <h4>✅ Live Server Status:</h4>
+            <p>• Frontend: พร้อมใช้งาน (Live Server)</p>
+            <p>• Backend: ต้องรัน <code>python app.py</code> แยก</p>
+            <p>• Chat Interface: พร้อมใช้งาน</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto redirect ไปยังหน้าแชทหลังจาก 3 วินาที หากต้องการ
+        // setTimeout(() => {
+        //     window.location.href = 'chat-live.html';
+        // }, 3000);
+    </script>
+</body>
+</html>
