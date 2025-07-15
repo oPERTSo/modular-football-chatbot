@@ -28,21 +28,8 @@ class ThaiFootballAnalysisChatbot:
     import requests
     import json
     def ask_openai_fallback(self, user_message: str) -> str:
-        """ใช้ OpenAI API ตอบคำถามทั่วไปเมื่อไม่มีข้อมูลในระบบ (รองรับ openai>=1.0.0)"""
-        try:
-            import openai
-            openai.api_key = self.openai_api_key
-            response = openai.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": user_message}],
-                max_tokens=800,
-                temperature=0.7
-            )
-            answer = response.choices[0].message.content.strip()
-            return answer
-        except Exception as e:
-            print(f"[OpenAI fallback error]: {e}")
-            return "ขออภัย ระบบไม่สามารถตอบคำถามนี้ได้ในขณะนี้ (OpenAI API error)"
+        """ตอบกลับเมื่อไม่มีข้อมูลหรือไม่เข้าเงื่อนไขที่รองรับ"""
+        return "❌ ไม่พบข้อมูลกรุณาลองใหม่อีกครั้ง"
     def get_team_squad_html(self, team_name: str, season: int = 2024) -> str:
         """ดึงและแสดงรายชื่อนักเตะของทีมในรูปแบบ HTML"""
         team_id = self.get_team_id_by_name(team_name)
@@ -844,17 +831,14 @@ class ThaiFootballAnalysisChatbot:
                     return result
                 return self.ask_openai_fallback(user_message)
 
-            # ถ้าเป็น keyword เดียว (เช่น "โรนัลโด้") หรือข้อความที่ไม่มีในระบบ ให้ใช้ OpenAI ตอบทันที
+            # ถ้าเป็น keyword เดียว (เช่น "โรนัลโด้") หรือข้อความที่ไม่มีในระบบ ให้ตอบว่าไม่พบข้อมูล
             if len(msg.split()) == 1:
-                print("🔍 Detected: Single keyword, fallback to OpenAI")
-                return self.ask_openai_fallback(user_message)
+                print("🔍 Detected: Single keyword, fallback to not found message")
+                return "❌ ไม่พบข้อมูลกรุณาลองใหม่อีกครั้ง"
 
-            # ถ้าไม่ใช่คำขอที่เฉพาะเจาะจง ให้ส่งไปยัง news manager
-            print("🔍 Detected: General query, forwarding to news manager")
-            result = self.news_manager.generate_news_response(msg)
-            if result and not result.startswith("<div class='error'>") and 'ไม่พบ' not in result:
-                return result
-            return self.ask_openai_fallback(user_message)
+            # ถ้าไม่ใช่คำขอที่เฉพาะเจาะจง ให้ตอบว่าไม่พบข้อมูล
+            print("🔍 Detected: General query, fallback to not found message")
+            return "❌ ไม่พบข้อมูลกรุณาลองใหม่อีกครั้ง"
 
         except Exception as e:
             print(f"❌ Error in analyze_message: {str(e)}")
