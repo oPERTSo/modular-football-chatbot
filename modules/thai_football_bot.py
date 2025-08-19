@@ -1134,7 +1134,7 @@ class ThaiFootballAnalysisChatbot:
         if not occurrences:
             try:
                 from rapidfuzz import process, fuzz
-                best, score, _ = process.extractOne(message_lower, popular_teams, scorer=fuzz.partial_ratio)
+                best, score, _ = process.extractOne(message_lower, popular_teams, scorer=fuzz.ratio)
                 if score >= 70:
                     occurrences.append((message_lower.find(best.lower()), message_lower.find(best.lower()) + len(best), best))
             except Exception:
