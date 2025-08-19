@@ -1109,19 +1109,64 @@ class ThaiFootballAnalysisChatbot:
         ]
         
         message_lower = message.lower()
-        found_teams = []
-        # Exact match first
+
+        # Short alias -> canonical Thai display name normalization map (safe, minimal)
+        alias_to_thai = {
+            # Manchester City
+            "แมนซิ": "แมนซิตี้", "man city": "แมนซิตี้", "manchester city": "แมนซิตี้", "city": "แมนซิตี้",
+            # Manchester United
+            "แมนยู": "แมนยู", "man utd": "แมนยู", "man u": "แมนยู", "manchester united": "แมนยู",
+            # Tottenham
+            "สเปอร์": "สเปอร์ส", "spurs": "สเปอร์ส", "tottenham": "สเปอร์ส",
+            # Liverpool / Arsenal / Chelsea
+            "liverpool": "ลิเวอร์พูล", "arsenal": "อาร์เซนอล", "chelsea": "เชลซี",
+        }
+
+        # Collect all substring occurrences with positions
+        occurrences = []  # (start, end, team_string)
         for team in popular_teams:
-            if team.lower() in message_lower:
-                found_teams.append(team)
-                if len(found_teams) >= 2:
-                    break
-        # Fuzzy match if not found
-        if not found_teams:
-            from rapidfuzz import process, fuzz
-            best, score, _ = process.extractOne(message_lower, popular_teams, scorer=fuzz.partial_ratio)
-            if score >= 70:
-                found_teams.append(best)
+            t = team.lower()
+            for m in re.finditer(re.escape(t), message_lower):
+                occurrences.append((m.start(), m.end(), team))
+
+        # If none found by exact substring, try fuzzy partial match on whole message
+        found = []
+        if not occurrences:
+            try:
+                from rapidfuzz import process, fuzz
+                best, score, _ = process.extractOne(message_lower, popular_teams, scorer=fuzz.partial_ratio)
+                if score >= 70:
+                    occurrences.append((message_lower.find(best.lower()), message_lower.find(best.lower()) + len(best), best))
+            except Exception:
+                pass
+
+        # Prefer longest matches first and pick non-overlapping spans
+        occurrences_sorted = sorted(occurrences, key=lambda x: (x[1] - x[0]), reverse=True)
+        selected = []  # list of (start,end,team)
+        occupied = []
+        for start, end, team in occurrences_sorted:
+            overlap = any(not (end <= s or start >= e) for s, e in [(s0, e0) for s0, e0, _ in selected])
+            if not overlap:
+                selected.append((start, end, team))
+            if len(selected) >= 2:
+                break
+
+        # Order by appearance in message
+        selected_ordered = sorted(selected, key=lambda x: x[0])
+
+        # Normalize aliases to Thai display names when possible
+        found_teams = []
+        for _, _, team in selected_ordered:
+            key = team.lower()
+            normalized = alias_to_thai.get(key, None)
+            if not normalized:
+                # try mapping from english-like tokens
+                for k, v in alias_to_thai.items():
+                    if key == k:
+                        normalized = v
+                        break
+            found_teams.append(normalized or team)
+
         return found_teams[:2]
     
     def _get_team_recent_form(self, team_name: str) -> Dict:
